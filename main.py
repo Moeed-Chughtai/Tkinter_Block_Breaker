@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import simpledialog
 from PIL import ImageTk, Image
 from game import Game
 
@@ -33,13 +34,15 @@ class Menu:
         self.exit_button.pack(side=TOP, pady=20)
 
     def start_game(self):
-        self.background_label.destroy()
-        self.play_button.destroy()
-        self.levels_button.destroy()
-        self.settings_button.destroy()
-        self.exit_button.destroy()
-        game = Game(self.window, self.windowX, self.windowY)
-        game.start_game()
+        playerName = simpledialog.askstring("Player Name", "Enter your name:")
+        if playerName is not None and playerName.strip() != "":
+            self.background_label.destroy()
+            self.play_button.destroy()
+            self.levels_button.destroy()
+            self.settings_button.destroy()
+            self.exit_button.destroy()
+            game = Game(self.window, self.windowX, self.windowY, playerName)
+            game.start_game()
 
     def levels_action(self):
         print("Levels button clicked")

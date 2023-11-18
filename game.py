@@ -6,17 +6,20 @@ from paddle import Paddle
 
 class Game:
 
-    def __init__(self, window, windowX, windowY):
+    def __init__(self, window, windowX, windowY, playerName):
         self.window = window
         self.windowX = windowX
         self.windowY = windowY
         self.canvas = Canvas(self.window, width=self.windowX, height=self.windowY)
         self.backgroundImg = ImageTk.PhotoImage(Image.open("background.jpg")) # Loads img
+        self.playerName = playerName
         self.blocks = []
         self.ball = Ball(self.canvas, "white", windowX // 2, windowY // 2, 10, 3)
         self.paddle = Paddle(self.canvas, "black", 150, 20, windowX // 2, windowY - 30, 8)
         self.score = 0
-        self.paused = False
+        self.paused = True
+        self.gameStarted = False
+        self.startMsg = None
         
     def setup(self):
         self.canvas.pack()
@@ -42,7 +45,7 @@ class Game:
             topLeftY += yGap
 
     def update(self):
-        if not self.paused:
+        if self.gameStarted and not self.paused:
             self.ball.move()
             self.ball.check_paddle_collision(self.paddle)
             self.ball.check_wall_collision(self.windowX)
@@ -53,7 +56,7 @@ class Game:
                     if block.hit(self.ball):
                         blocks_to_remove.append(block)
                     self.score += 1
-
+            
             for block in blocks_to_remove:
                 self.blocks.remove(block)
 
@@ -70,6 +73,11 @@ class Game:
         if not self.paused:
             self.update()
 
+    def toggle_game(self, event):
+        self.gameStarted = True
+        self.paused = False
+        self.startMsg.destroy()
+
     def start_game(self):
         self.setup()
         self.display_blocks()
@@ -77,4 +85,9 @@ class Game:
         self.paddle.draw()
         self.bind_controls()
         self.update()
+
+        self.startMsg = Label(self.window, text="Press RETURN to play", font=("Helvetica", 32), fg="white", bg="black")
+        self.startMsg.place(x=340, y=400)
+        self.window.bind("<Return>", self.toggle_game)
+        
         self.window.mainloop()
