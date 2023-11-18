@@ -29,20 +29,11 @@ class Block:
     
     def hit(self, ball):
         self.canvas.delete(self.blockId)
+        ball.dy = -ball.dy
 
         if self.currentColour == 3:
-            angle_of_incidence = math.atan2(ball.dy, ball.dx)
-            # Reflect the ball based on the angle of incidence
-            new_angle = math.pi - angle_of_incidence
-            ball.dx = ball.speed * math.cos(new_angle)
-            ball.dy = ball.speed * math.sin(new_angle)
             return True
         else:
             self.currentColour += 1
             self.draw()
-            angle_of_incidence = math.atan2(ball.dy, ball.dx)
-            # Reflect the ball based on the angle of incidence
-            new_angle = math.pi - angle_of_incidence
-            ball.dx = ball.speed * math.cos(new_angle)
-            ball.dy = ball.speed * math.sin(new_angle)
             return False
